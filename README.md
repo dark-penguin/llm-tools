@@ -1,6 +1,7 @@
+# llm-tools
+
 [![Go Multi-Platform Build+Release](https://github.com/dark-penguin/llm-tools/actions/workflows/go-build.yml/badge.svg)](https://github.com/dark-penguin/llm-tools/actions/workflows/go-build.yml)
 
-# llm-tools
 This is a toolkit for working with local LLMs. It also served as an exercise in agentic coding.
 
 Only OpenAPI-compatible endpoints are supported. IIRC Ollama has added support for that not long aho, but I haven't tested this with Ollama.
