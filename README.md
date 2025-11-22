@@ -1,3 +1,5 @@
+[![Go Multi-Platform Build+Release](https://github.com/dark-penguin/llm-tools/actions/workflows/go-build.yml/badge.svg)](https://github.com/dark-penguin/llm-tools/actions/workflows/go-build.yml)
+
 # llm-tools
 This is a toolkit for working with local LLMs. It also served as an exercise in agentic coding.
 
