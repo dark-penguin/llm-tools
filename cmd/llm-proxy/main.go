@@ -18,8 +18,8 @@ import (
 
 func main() {
 	// Define and parse command line flags
-	port := flag.IntP("port", "p", 8080, "Port to listen on (default: 8080)")
-	targetAddr := flag.StringP("target", "t", "http://localhost:11434", "Target address to connect to (default: http://localhost:11434)")
+	port := flag.IntP("port", "p", 8080, "Port to listen on")
+	targetAddr := flag.StringP("target", "t", "http://localhost:11434", "Target address to connect to")
 	flag.Parse()
 
 	// Validate target address format
