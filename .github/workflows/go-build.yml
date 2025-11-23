@@ -73,6 +73,9 @@ jobs:
     # gh needs this to see commit messages
     - name: Checkout code
       uses: actions/checkout@v4
+      #with:
+      #  fetch-depth: 0
+      # This means "with all history"! But not necessary for changelogs!
 
     - name: Download all artifacts
       uses: actions/download-artifact@v4
@@ -94,8 +97,8 @@ jobs:
         --title "${{ github.ref_name }}"
         --generate-notes
         ./dist/*
-      # --generate-notes - gives a link to the diff since the last release
-      # --notes-from-tag - just put the commit message for the tag in the notes
+      # --generate-notes - attach a link to the commits since the last release
+      # --notes-from-tag - just put the commit message only for this tag in the notes
       # -F, --notes-file <file> - read release notes from file (use "-" to read from standard input)
       # -n, --notes <string> - provide notes manually
       # -d, --draft - save the release as a draft instead of publishing it
