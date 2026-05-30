@@ -205,7 +205,7 @@ func main() {
 		}
 	}
 
-	headers := []string{"Model", "Prompt", "Sec", "Prompt TPS", "Tokens TPS"}
+	headers := []string{"Model", "Length", "Sec", "Prompt", "Decode"}
 
 	// Print table header
 	fmt.Printf("| %-*s |", maxModelLength, headers[0])
@@ -316,7 +316,7 @@ func main() {
 			}
 
 			// Print prompt tokens per second and predicted tokens per second
-			fmt.Printf("| %-*s | %6d | %3.0f | %10.2f | %10.2f |\n",
+			fmt.Printf("| %-*s | %6d | %3.0f | %6.2f | %6.2f |\n",
 				maxModelLength,
 				model,
 				response.Timings.PromptN,
