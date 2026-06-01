@@ -216,8 +216,8 @@ func main() {
 		for i := range headers {
 			headers[i] = strings.TrimSpace(headers[i])
 		}
-		fmt.Printf("%s;", headers[0])
-		printformat = "%[2]s;"
+		fmt.Printf("%s,", headers[0])
+		printformat = "%[2]s,"
 	} else {
 		fmt.Printf("| %-*s |", maxModelLength, headers[0])
 		printformat = " %-*s |"
@@ -339,7 +339,7 @@ func main() {
 				response.Timings.PredictedPerSecond,
 			}
 			if csv {
-				fmt.Printf("%s;%d;%.0f;%.2f;%.2f;\n", args...)
+				fmt.Printf("%s,%d,%.0f,%.2f,%.2f,\n", args...)
 			} else {
 				args = append([]any{maxModelLength}, args...)
 				fmt.Printf("| %-*s | %6d | %3.0f | %7.2f | %6.2f |\n", args...)
