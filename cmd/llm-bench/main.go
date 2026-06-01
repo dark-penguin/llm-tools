@@ -92,6 +92,7 @@ func main() {
 	flag.StringP("url", "u", "http://localhost:8080/v1", "API URL")
 	flag.StringP("models", "m", "", "Models (comma-separated)")
 	flag.BoolP("list", "l", false, "List available models only")
+	flag.BoolP("csv", "", false, "Output in CSV format")
 	flag.StringP("tokens", "t", "100", "Maximum output tokens")
 	flag.StringP("prompt", "p", "", "Rough prompt token numbers (comma-separated)")
 	flag.StringP("temp", "", "", "Temperature")
@@ -105,7 +106,8 @@ func main() {
 	// Parse the arguments
 	apiKey := getValue[string](flag.Lookup("key"), "KEY", "my-key")
 	url := getValue[string](flag.Lookup("url"), "URL", "http://localhost:8080/v1")
-	list, _ := flag.GetBool("list")                                     // No need to set this via envvar!
+	list, _ := flag.GetBool("list") // No need to set this via envvar!
+	csv, _ := flag.GetBool("csv")
 	models := getValue[string](flag.Lookup("models"), "MODELS", "list") // Don't panic - just list models!
 	maxTokens := getValue[int](flag.Lookup("tokens"), "TOKENS", "100")
 	promptTokens := getValue[string](flag.Lookup("prompt"), "PROMPT", "100")
@@ -208,15 +210,28 @@ func main() {
 	headers := []string{"Model", "Length", "Sec", " Prompt", "Decode"}
 
 	// Print table header
-	fmt.Printf("| %-*s |", maxModelLength, headers[0])
+	var printformat string
+	if csv {
+		// Strip whitespace from headers
+		for i := range headers {
+			headers[i] = strings.TrimSpace(headers[i])
+		}
+		fmt.Printf("%s;", headers[0])
+		printformat = "%[2]s;"
+	} else {
+		fmt.Printf("| %-*s |", maxModelLength, headers[0])
+		printformat = " %-*s |"
+	}
 	for _, header := range headers[1:] {
-		fmt.Printf(" %-*s |", len(header), header)
+		fmt.Printf(printformat, len(header), header)
 	}
 
 	// Print the "---"
-	fmt.Printf("\n|%s|", strings.Repeat("-", maxModelLength+2))
-	for _, header := range headers[1:] {
-		fmt.Printf("%s|", strings.Repeat("-", len(header)+2))
+	if !csv {
+		fmt.Printf("\n|%s|", strings.Repeat("-", maxModelLength+2))
+		for _, header := range headers[1:] {
+			fmt.Printf("%s|", strings.Repeat("-", len(header)+2))
+		}
 	}
 	fmt.Println()
 
@@ -316,13 +331,19 @@ func main() {
 			}
 
 			// Print prompt tokens per second and predicted tokens per second
-			fmt.Printf("| %-*s | %6d | %3.0f | %7.2f | %6.2f |\n",
-				maxModelLength,
+			args := []any{
 				model,
 				response.Timings.PromptN,
-				response.Timings.PromptMs/1000,
+				float64(response.Timings.PromptMs) / 1000.0,
 				response.Timings.PromptPerSecond,
-				response.Timings.PredictedPerSecond)
+				response.Timings.PredictedPerSecond,
+			}
+			if csv {
+				fmt.Printf("%s;%d;%.0f;%.2f;%.2f;\n", args...)
+			} else {
+				args = append([]any{maxModelLength}, args...)
+				fmt.Printf("| %-*s | %6d | %3.0f | %7.2f | %6.2f |\n", args...)
+			}
 		}
 	}
 }

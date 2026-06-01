@@ -25,6 +25,7 @@ Usage of llm-bench:
       --top_k string    Top K
       --top_p string    Top P
       --min_p string    Min P
+      --csv             Output in CSV format instead of an ASCII table
 ```
 Defaults for all arguments except `--list` can be configured in `.llm-bench.env` or via environment variables. Variables' names are the same as long arguments, but uppercase (e.g. `MODELS`, `TOP_P`, etc.).
 
