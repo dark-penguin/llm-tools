@@ -20,6 +20,7 @@ func main() {
 	// Define and parse command line flags
 	port := flag.IntP("port", "p", 8080, "Port to listen on")
 	targetAddr := flag.StringP("target", "t", "http://localhost:11434", "Target address to connect to")
+	verbose := flag.BoolP("verbose", "v", false, "Enable verbose output (show headers)")
 	flag.Parse()
 
 	// Validate target address format
@@ -59,6 +60,10 @@ func main() {
 	proxy := &http.Server{
 		Addr: fmt.Sprintf("localhost:%d", *port),
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// Log request headers if verbose mode is enabled
+			if *verbose {
+				logHeaders(r.Header, "Request Headers")
+			}
 			// Create the target URL
 			targetURL := *targetAddr + r.URL.Path
 			if r.URL.RawQuery != "" {
@@ -96,6 +101,11 @@ func main() {
 			}
 			defer resp.Body.Close()
 
+			// Log response headers if verbose mode is enabled
+			if *verbose {
+				logHeaders(resp.Header, "Response Headers")
+			}
+
 			// Copy response headers
 			for name, values := range resp.Header {
 				for _, value := range values {
@@ -106,7 +116,7 @@ func main() {
 			// Set status code
 			w.WriteHeader(resp.StatusCode)
 
-			handleStreamingResponse(resp.Body, w)
+			handleStreamingResponse(resp.Body, w, *verbose)
 		}),
 	}
 
@@ -115,6 +125,15 @@ func main() {
 
 	if err := proxy.ListenAndServe(); err != nil {
 		log.Fatalf("Error starting proxy server: %v", err)
+	}
+}
+
+func logHeaders(header http.Header, headerType string) {
+	log.Printf("%s:", headerType)
+	for name, values := range header {
+		for _, value := range values {
+			log.Printf("  %s: %s", name, value)
+		}
 	}
 }
 
@@ -146,7 +165,7 @@ func handleRegularResponse(body io.ReadCloser, w http.ResponseWriter) {
 	w.Write(bodyBytes)
 }
 
-func handleStreamingResponse(body io.ReadCloser, w http.ResponseWriter) {
+func handleStreamingResponse(body io.ReadCloser, w http.ResponseWriter, verbose bool) {
 	// Use a tee reader to both process and forward the stream
 	pr, pw := io.Pipe()
 	tee := io.TeeReader(body, pw)
