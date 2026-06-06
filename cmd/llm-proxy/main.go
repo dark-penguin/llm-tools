@@ -60,6 +60,8 @@ func main() {
 	proxy := &http.Server{
 		Addr: fmt.Sprintf("localhost:%d", *port),
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// Print separator before processing the request
+			fmt.Printf("- - -\n")
 			// Log request headers if verbose mode is enabled
 			if *verbose {
 				logHeaders(r.Header, "Request Headers")
@@ -172,8 +174,6 @@ func handleStreamingResponse(body io.ReadCloser, w http.ResponseWriter, verbose 
 
 	// Process the stream in a goroutine
 	go func() {
-		fmt.Printf("- - -\n")
-		log.Printf("\n\n")
 		defer pw.Close()
 		scanner := bufio.NewScanner(tee)
 		for scanner.Scan() {
