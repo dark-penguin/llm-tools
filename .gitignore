@@ -24,3 +24,8 @@ go.work.sum
 # Editor/IDE
 .idea/
 .vscode/
+
+.kilo
+
+cmd/llm-bench/llm-bench
+cmd/llm-proxy/llm-proxy
