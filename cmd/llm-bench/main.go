@@ -253,7 +253,7 @@ func main() {
 			tokenCount := min(promptSize, len(data)/4)
 
 			// Truncate to the specified number of tokens
-			prompt := string(data[:tokenCount*4]) + "- - -\nSummarize the above text"
+			prompt := "Summarize the following:" + string(data[:tokenCount*4])
 
 			// Create request data with the current model and prompt
 			requestData := OpenAIRequest{
