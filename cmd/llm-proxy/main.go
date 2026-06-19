@@ -58,7 +58,7 @@ func main() {
 
 	// Create reverse proxy
 	proxy := &http.Server{
-		Addr: fmt.Sprintf("localhost:%d", *port),
+		Addr: fmt.Sprintf("0.0.0.0:%d", *port),
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Print separator before processing the request
 			fmt.Printf("- - -\n")
