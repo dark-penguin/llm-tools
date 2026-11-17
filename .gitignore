@@ -27,7 +27,5 @@ go.work.sum
 
 .kilo
 
-llm-bench
-llm-proxy
-cmd/llm-bench/llm-bench
-cmd/llm-proxy/llm-proxy
+/bin
+/coverage.out
