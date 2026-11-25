@@ -1,0 +1,27 @@
+name: Simple Go release
+#run-name: ${{ github.actor }} triggered a ${{ github.event_name }} on ${{ github.ref }}
+
+on:
+  push:
+    tags:  # v*** to publish, v***-<anything> - prerelease
+      - v*
+    branches:  # For tags, publish them; for normal commits, just build and test
+      - master
+      - main
+      - dev
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-latest, macos-15-intel]
+    uses: dark-penguin/actions/.github/workflows/build-go.yml@master
+    with:
+      os: ${{ matrix.os }}
+
+  release:
+    if: github.ref_type == 'tag'  # For tags, publish them; for normal commits, just build and test
+    needs: build
+    uses: dark-penguin/actions/.github/workflows/release.yml@master
+    permissions:  # Allow the imported workflow to write to this repository's releases
+      contents: write

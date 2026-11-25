@@ -1,0 +1,27 @@
+name: Simple Go release
+#run-name: ${{ github.actor }} triggered a ${{ github.event_name }} on ${{ github.ref }}
+
+on:
+  push:
+    tags:  # v*** to publish, v***-<anything> - prerelease
+      - v*
+    branches:  # For tags, publish them; for normal commits, just build and test
+      - master
+      - main
+      - dev
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    uses: darkpenguin/actions/.github/workflows/build-go.yml@master
+    with:
+      os: ${{ matrix.os }}
+
+  release:
+    if: github.ref_type == 'tag'  # For tags, publish them; for normal commits, just build and test
+    needs: build
+    uses: darkpenguin/actions/.github/workflows/release.yml@master
+    permissions:  # Restrict the release job to only "contents" just in case (optional)
+      contents: write
